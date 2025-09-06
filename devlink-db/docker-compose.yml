@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: devlink
+      MYSQL_USER: devlink_user
+      MYSQL_PASSWORD: secret_pass
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "3307:3306"  # Porta externa 3307 → interna 3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"    # Mudei para 8081
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:

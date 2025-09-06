@@ -1,0 +1,154 @@
+🎯 PLANO REVISADO: DevLink - PLATAFORMA FREELANCER
+📋 VISÃO GERAL DO SISTEMA DE ASSINATURAS
+
+Área 1: Freelancers (Prestadores de serviço)
+✅ Totalmente gratuita
+Podem se cadastrar, criar perfis, enviar propostas
+
+
+Área 2: Clientes (Quem contrata serviços)
+Plano Gratuito: 1 projeto por mês
+Plano Premium: R$ 19,90/mês - projetos ilimitados
+
+---
+
+## 🎯 **Por que usar Docker no início do projeto?**
+Você fez certo! Docker garante:
+- Ambiente de desenvolvimento consistente (evita "funciona na minha máquina")
+- Isolamento do banco de dados e aplicação
+- Fácil replicação para outros desenvolvedores ou ambientes
+- Controle de versões de dependências (MySQL, PHP, etc)
+
+---
+
+## 📋 **PLANO DE AÇÃO PASSO A PASSO**
+
+### **FASE 1: MODELOS (MODELS) - Fundação da Aplicação**
+1. **Criar os Models** baseados nas migrations:
+   - `User` (já existe, mas pode precisar de ajustes)
+   - `Profile`
+   - `Project`
+   - `Proposal`
+   - `SubscriptionPlan`
+   - `UserSubscription`
+   - `Transaction`
+
+2. **Definir relações nos Models** (exemplo):
+```php
+// User.php
+public function profile() {
+    return $this->hasOne(Profile::class);
+}
+
+public function projects() {
+    return $this->hasMany(Project::class);
+}
+
+public function subscriptions() {
+    return $this->hasMany(UserSubscription::class);
+}
+```
+
+3. **Criar Factories** para testes com dados falsos
+
+---
+
+### **FASE 2: CONTROLADORES (CONTROLLERS) - Lógica de Negócio**
+1. **Criar controllers** para cada entidade principal:
+   - `AuthController` (login/registro)
+   - `ProjectController`
+   - `ProposalController`
+   - `SubscriptionController`
+   - `ProfileController`
+
+2. **Implementar métodos CRUD** em cada controller:
+   - `index()`, `create()`, `store()`, `show()`, `edit()`, `update()`, `destroy()`
+
+3. **Adicionar lógica de negócio** específica:
+   - Verificação de assinatura para criar projetos
+   - Sistema de propostas
+   - Processamento de pagamentos
+
+---
+
+### **FASE 3: ROTAS (ROUTES) - Navegação**
+1. **Definir rotas no arquivo `web.php`**:
+```php
+// Autenticação
+Route::get('/register', [AuthController::class, 'showRegistration']);
+Route::post('/register', [AuthController::class, 'register']);
+
+// Projetos
+Route::get('/projects', [ProjectController::class, 'index']);
+Route::get('/projects/create', [ProjectController::class, 'create'])->middleware('auth');
+Route::post('/projects', [ProjectController::class, 'store'])->middleware('auth');
+
+// Assinaturas
+Route::get('/subscription', [SubscriptionController::class, 'index'])->middleware('auth');
+```
+
+2. **Criar rotas de API** (se necessário) no `api.php`
+
+3. **Agrupar rotas com middlewares** apropriados
+
+---
+
+### **FASE 4: VIEWS (FRONT-END) - Interface**
+1. **Configurar Tailwind CSS**:
+   - Instalar via NPM: `npm install -D tailwindcss`
+   - Configurar `tailwind.config.js`
+   - Importar no CSS principal
+
+2. **Criar layout base** com componentes comuns:
+   - `layouts/app.blade.php` (navbar, footer)
+   - Componentes: navigation, cards, forms
+
+3. **Criar views para cada funcionalidade**:
+   - `auth/register.blade.php`
+   - `projects/index.blade.php`
+   - `projects/create.blade.php`
+   - `subscription/plans.blade.php`
+
+4. **Implementar design responsivo** com Tailwind
+
+---
+
+### **FASE 5: AUTENTICAÇÃO E PERMISSÕES**
+1. **Configurar sistema de autenticação** Laravel
+2. **Criar middlewares** personalizados:
+   - `CheckSubscription` - verifica se usuário tem assinatura ativa
+   - `CheckUserType` - diferencia freelancers e clientes
+
+---
+
+### **FASE 6: SISTEMA DE PAGAMENTOS**
+1. **Integrar com gateway de pagamento** (ex: Stripe, Mercado Pago)
+2. **Criar webhooks** para processar retornos de pagamento
+3. **Implementar sistema de notificações** por email
+
+---
+
+### **FASE 7: TESTES E DEPLOY**
+1. **Criar testes** para funcionalidades críticas
+2. **Otimizar para produção**
+3. **Configurar ambiente de produção** no Docker
+4. **Deploy** (ex: AWS, DigitalOcean)
+
+---
+
+## 📊 **CRONOGRAMA SUGERIDO (Priorização)**
+1. **Semana 1**: Models + Autenticação básica
+2. **Semana 2**: CRUD de Projects + Proposals
+3. **Semana 3**: Sistema de Assinaturas
+4. **Semana 4**: Front-end + Pagamentos
+5. **Semana 5**: Testes + Polimento
+
+---
+
+## 🚀 **PRÓXIMOS PASSOS IMEDIATOS**
+1. **Comece pelos Models** - são a base de tudo
+2. **Configure o `.env`** com as credenciais do banco Docker
+3. **Rode as migrations**: `php artisan migrate`
+4. **Crie o primeiro Model**: `php artisan make:model Profile -mcr`
+
+Quer que eu detalhe alguma fase específica? Posso gerar código exemplo para qualquer uma dessas etapas!
