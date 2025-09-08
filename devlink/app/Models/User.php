@@ -22,6 +22,7 @@ class User extends Authenticatable
         'role'
         // ►►► DEFINE QUAIS CAMPOS PODEM SER PREENCHIDOS EM MASSAS
     ];
+    
 
     protected $hidden = [
         'password',
