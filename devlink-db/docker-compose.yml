@@ -1,7 +1,8 @@
 version: "3.8"
 services:
   mysql:
-    image: mysql:8.0
+    build: .
+    container_name: devlink-mysql
     restart: always
     environment:
       MYSQL_DATABASE: devlink
@@ -9,21 +10,42 @@ services:
       MYSQL_PASSWORD: secret_pass
       MYSQL_ROOT_PASSWORD: root_password
     ports:
-      - "3307:3306"  # Porta externa 3307 → interna 3306
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - devlink-net
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    container_name: devlink-phpmyadmin
     restart: always
     ports:
-      - "8081:80"    # Mudei para 8081
+      - "8081:80"
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
     depends_on:
       - mysql
+    networks:
+      - devlink-net
+
+  laravel:
+    build:
+      context: ../devlink   # aponta para a pasta do Laravel
+    container_name: devlink-app
+    restart: always
+    volumes:
+      - ../devlink:/var/www
+    ports:
+      - "8080:80"   # acesso web do Laravel
+    depends_on:
+      - mysql
+    networks:
+      - devlink-net
 
 volumes:
   mysql_data:
+
+networks:
+  devlink-net:
