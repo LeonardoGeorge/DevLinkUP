@@ -1,28 +1,17 @@
-# Imagem base com PHP e extensões necessárias
-FROM php:8.2-fpm
+FROM php:8.2-apache
 
-# Instalar dependências do sistema e extensões do PHP
-RUN apt-get update && apt-get install -y \
-    libpng-dev libjpeg-dev libfreetype6-dev zip git unzip curl \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql
+# Instala dependências necessárias do Laravel
+RUN docker-php-ext-install pdo pdo_mysql
 
-# Instalar Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Ativa o mod_rewrite para rotas do Laravel
+RUN a2enmod rewrite
 
-# Definir diretório de trabalho
-WORKDIR /var/www
+# Copia arquivos do projeto para dentro do container
+COPY . /var/www/html
 
-# Copiar código Laravel
-COPY . .
+# Define permissões
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
 
-# Instalar dependências do Laravel
-RUN composer install
-
-# Ajustar permissões
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-
-# Expor porta do PHP-FPM
-EXPOSE 9000
-
-CMD ["php-fpm"]
+# Habilita o virtual host do Laravel
+COPY ./docker/laravel.conf /etc/apache2/sites-available/000-default.conf

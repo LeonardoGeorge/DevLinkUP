@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 
 class Profile extends Model
 {
@@ -13,25 +11,25 @@ class Profile extends Model
 
     protected $fillable = [
         'user_id',
+        'first_name',
+        'last_name',
         'bio',
         'skills',
         'portfolio_url',
         'hourly_rate',
         'experience_level',
-        'avatar'
-        // ►►► INFORMAÇÕES PROFISSIONAIS DOS FREELANCERS
+        'avatar',
+        'location'
     ];
 
     protected $casts = [
         'skills' => 'array',
-        'hourly_rate' => 'decimal:2'
-        // ►►► CONVERTE 'SKILLS' PARA ARRAY AUTOMATICAMENTE
+        'hourly_rate' => 'decimal:2',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
-        // ►►► PERTENCE A UM USUÁRIO (RELACIONAMENTO INVERSO)
     }
 
     public function addSkill($skill)
@@ -42,6 +40,5 @@ class Profile extends Model
             $this->skills = $skills;
         }
         return $this;
-        // ►►► MÉTODO CONVÊNIENCE PARA ADICIONAR HABILIDADES
     }
 }

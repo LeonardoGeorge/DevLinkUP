@@ -14,37 +14,16 @@ class WelcomeController extends Controller
      */
     public function index()
     {
-        try {
-            // Estatísticas da plataforma (com fallback seguro)
-            $stats = [
-                'freelancers' => User::where('type', 'freelancer')->count() ?? 0,
-                'clients' => User::where('type', 'client')->count() ?? 0,
-                'projects' => Project::where('status', 'open')->count() ?? 0,
-                'completed_projects' => Project::where('status', 'completed')->count() ?? 0,
-            ];
+        $stats = [
+            'freelancers' => \App\Models\User::where('role', 'freelancer')->count(),
+            'clients' => \App\Models\User::where('role', 'client')->count(),
+            'projects' => \App\Models\Project::count(),
+            'completed_projects' => \App\Models\Project::where('status', 'completed')->count(),
+        ];
 
-            // Categorias em destaque (skills mais populares)
-            $featuredCategories = $this->getFeaturedCategories();
-
-            // Depoimentos (hardcoded por enquanto)
-            $testimonials = $this->getTestimonials();
-
-            return view('welcome', compact('stats', 'featuredCategories', 'testimonials'));
-        } catch (\Exception $e) {
-            // Fallback em caso de erro no banco
-            $stats = [
-                'freelancers' => 1250,
-                'clients' => 350,
-                'projects' => 89,
-                'completed_projects' => 256,
-            ];
-
-            $featuredCategories = $this->getFeaturedCategories();
-            $testimonials = $this->getTestimonials();
-
-            return view('welcome', compact('stats', 'featuredCategories', 'testimonials'));
-        }
+        return view('welcome', compact('stats'));
     }
+
 
     /**
      * Get featured categories based on popular skills.
